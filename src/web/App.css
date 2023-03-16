@@ -38,3 +38,12 @@ html, body {
   overflow: auto;
   position: relative;
 }
+
+.execute-controls {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
