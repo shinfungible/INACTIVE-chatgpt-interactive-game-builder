@@ -10,14 +10,31 @@ html, body {
   height: 100vh;
 }
 
+.left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .code-container {
   flex: 1;
   background-color: #f0f0f0;
   overflow: auto;
 }
 
+.chat-input {
+  height: 5vh;
+}
+
+.text-interface {
+  width: 100%;
+  height: 100%;
+  padding: 0em 1em;
+}
+
 .game-container {
   flex: 1;
   background-color: #e0e0e0;
   overflow: auto;
+  position: relative;
 }
