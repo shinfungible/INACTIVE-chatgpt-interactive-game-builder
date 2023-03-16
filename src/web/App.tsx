@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import CodeContainer from "./CodeContainer";
+import GameContainer from "./GameContainer";
 import "./App.css";
 
 export const App = () => {
   const [code, setCode] = useState<string>("// ここにTypeScriptコードを書いてください。");
   const [message, setMessage] = useState<string>("");
   const [autoExecute, setAutoExecute] = useState<boolean>(false);
+  const [windowSize, setWindowSize] = useState<{ width: number; height: number }>({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
@@ -18,6 +23,17 @@ export const App = () => {
   const handleAutoExecuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAutoExecute(e.target.checked);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="container">
@@ -34,7 +50,7 @@ export const App = () => {
         </div>
       </div>
       <div className="game-container">
-        {/* ゲーム画面が表示される領域 */}
+        <GameContainer width={windowSize.width / 2} height={windowSize.height} />
         <div className="execute-controls">
           <button>実行</button>
           <label>
