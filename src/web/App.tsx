@@ -1,14 +1,17 @@
 import { useState } from "react";
+import CodeContainer from "./CodeContainer";
 import "./App.css";
 
 export const App = () => {
-  const [count, setCount] = useState(0);
+  const [code, setCode] = useState<string>("// ここにTypeScriptコードを書いてください。");
+
+  const handleCodeChange = (newCode: string) => {
+    setCode(newCode);
+  };
 
   return (
     <div className="container">
-      <div className="code-container">
-        {/* TypeScriptコードが表示される領域 */}
-      </div>
+      <CodeContainer code={code} onCodeChange={handleCodeChange} />
       <div className="game-container">
         {/* ゲーム画面が表示される領域 */}
       </div>
