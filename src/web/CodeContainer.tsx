@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as monaco from 'monaco-editor';
-import './CodeContainer.css';
+import React, { useEffect } from "react";
+import Editor, { useMonaco } from "@monaco-editor/react";
 
 interface CodeContainerProps {
   code: string;
@@ -8,49 +7,39 @@ interface CodeContainerProps {
 }
 
 const CodeContainer: React.FC<CodeContainerProps> = ({ code, onCodeChange }) => {
-  const editorRef = useRef<HTMLDivElement>(null);
-  const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const monaco = useMonaco();
+
+  const handleEditorChange = (newValue: string | undefined) => {
+    if (newValue !== undefined) {
+      onCodeChange(newValue);
+    }
+  };
 
   useEffect(() => {
-    if (editorRef.current) {
-      monacoEditorRef.current = monaco.editor.create(editorRef.current, {
-        value: code,
-        language: 'typescript',
-        theme: 'vs-dark',
-        automaticLayout: true, // 追加
-      });
-
-      monacoEditorRef.current.onDidChangeModelContent(() => {
-        if (monacoEditorRef.current) {
-          onCodeChange(monacoEditorRef.current.getValue());
-        }
+    if (monaco) {
+      monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+        ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
+        noEmit: true,
+        strict: true,
+        jsx: monaco.languages.typescript.JsxEmit.React,
+        target: monaco.languages.typescript.ScriptTarget.ESNext,
+        moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+        module: monaco.languages.typescript.ModuleKind.ESNext,
+        allowSyntheticDefaultImports: true,
+        esModuleInterop: true,
       });
     }
-  }, []);
-
-  useEffect(() => {
-    if (monacoEditorRef.current) {
-      monacoEditorRef.current.setValue(code);
-    }
-  }, [code]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (monacoEditorRef.current) {
-        monacoEditorRef.current.layout();
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  }, [monaco]);
 
   return (
-    <div className="code-container">
-      <div ref={editorRef} className="editor" />
+    <div style={{ height: "100%" }}>
+      <Editor
+        height="100%"
+        defaultLanguage="typescript"
+        value={code}
+        onChange={handleEditorChange}
+        theme="vs-dark"
+      />
     </div>
   );
 };
